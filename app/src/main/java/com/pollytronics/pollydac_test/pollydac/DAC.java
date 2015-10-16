@@ -54,7 +54,7 @@ public class DAC extends ContentObservable {
 
     @Override
     /**
-     * This overrided destructor throws an Error when the DAC is destroyed while the lock is not
+     * This overridden destructor throws an Error when the DAC is destroyed while the lock is not
      * released.
      */
     protected void finalize() throws Throwable {
