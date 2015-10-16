@@ -27,12 +27,16 @@ public class DAC extends ContentObservable {
     private DbHelper dbHelper = null;
     private final ReentrantLock dbLock = new ReentrantLock();
     private final List<DbTable> tables = new ArrayList<>();
+    private String dbFileName;
+    private int dbVersionNr;
 
     /**
      * The standard constructor.
      * Throws an Error when more than one objects are instanciated to enforce the singleton pattern.
      */
-    protected DAC() {
+    protected DAC(String dbFileName, int dbVersionNr) {
+        this.dbFileName = dbFileName;
+        this.dbVersionNr = dbVersionNr;
         if (singletonGuard_isInstanciated)
             throw new Error("creation of second instance of DAC detected, use singleton pattern");
         singletonGuard_isInstanciated = true;
@@ -44,7 +48,7 @@ public class DAC extends ContentObservable {
      * the tables in that same constructor.
      * @param context
      */
-    protected void initializeDatabase(Context context, String dbFileName, int dbVersionNr) {
+    protected void initializeDatabase(Context context) {
         if(tables.size() == 0) throw new Error("no tables were found registered on DAC.initializeDatabase()");
         if(dbHelper != null) throw new Error("DAC object has allready been initialized");
         dbHelper = new DbHelper(context, tables, dbFileName, dbVersionNr);

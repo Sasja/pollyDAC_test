@@ -16,8 +16,9 @@ public class MyDAC extends DAC {
     private DbNumberTable numberTable;
 
     private MyDAC(Context context) {
+        super(DB_FILENAME, DB_VERSION_NR);
         registerAllTables();
-        initializeDatabase(context, DB_FILENAME, DB_VERSION_NR);
+        initializeDatabase(context);
     }
 
     public static MyDAC get(Context context) {
