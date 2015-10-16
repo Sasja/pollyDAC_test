@@ -11,7 +11,7 @@ import com.pollytronics.pollydac_test.pollydac.DbTable;
  * Created by pollywog on 10/9/15.
  */
 public class DbNumberTable extends DbTable<MyNumber> {
-    public static final String COLUMN_VALUE = "value";
+    private static final String COLUMN_VALUE = "value";
 
     DbNumberTable(String tableName, DAC dao) {
         super(tableName, dao);
