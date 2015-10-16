@@ -15,7 +15,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * After instantiation register one or more tables with the object with registerTable().
  * After table registration, initialize with initializeDatabase()
  * It's a good approach to perform these steps in the constructor of a derived class that
- * implements the singleton pattern.
+ * implements the singleton pattern. It's also a good idea to provide getters for the
+ * registered tables in that derived class for convenience:
+ *      so that eg. {@code MyDAC.cats()} : returns the registered cat-table implementation.
+ *      then eg. {@code MyDAC.cats().insert(new DbEntry<Cat>(darwin))} to store Darwin into the cat-table.
  *
  * Created by pollywog on 9/26/15.
  */
@@ -67,6 +70,7 @@ public class DAC extends ContentObservable {
     /**
      * Stores a reference to a table object in order to allow its management by the DAC object.
      * Make sure to call this method with all tables <b>before<b/> calling initializeDatabase(Context context).
+     *
      * @param newTable table to be managed by the DAC instance
      */
     protected void registerTable(DbTable newTable) {
