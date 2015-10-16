@@ -5,19 +5,17 @@ import android.database.ContentObservable;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Database Access Object class that handles all SQLite stuff and provides threadsafety.
  * You should only ever instantiate one object of this class.
- * After instantiation register one or more tables with the object with registerTable().
- * After table registration, initialize with initializeDatabase()
- * It's a good approach to perform these steps in the constructor of a derived class that
- * implements the singleton pattern. It's also a good idea to provide getters for the
- * registered tables in that derived class for convenience:
- *      so that eg. {@code MyDAC.cats()} : returns the registered cat-table implementation.
+ * After instantiation initialize with initializeDatabase()
+ * It's a good approach to perform this in the constructor of a derived class that
+ * implements the singleton pattern. It's also a good idea for this derived class to provide
+ * getters for those tables:
+ *      so that eg. {@code MyDAC.cats()} : returns the cat-table.
  *      then eg. {@code MyDAC.cats().insert(new DbEntry<Cat>(darwin))} to store Darwin into the cat-table.
  *
  * Created by pollywog on 9/26/15.
@@ -29,7 +27,6 @@ public class DAC extends ContentObservable {
     private SQLiteDatabase db = null;
     private DbHelper dbHelper = null;
     private final ReentrantLock dbLock = new ReentrantLock();
-    private final List<DbTable> tables = new ArrayList<>();
     private String dbFileName;
     private int dbVersionNr;
 
@@ -46,13 +43,11 @@ public class DAC extends ContentObservable {
     }
 
     /**
-     * This method needs to be called after all tables have been registered before the DAC is used.
-     * A good approach is to call it in the constructor of a derived class after registering all
-     * the tables in that same constructor.
+     * This method needs to be called before accessing the database.
+     * A good approach is to call it in the constructor of a derived class.
      * @param context
      */
-    protected void initializeDatabase(Context context) {
-        if(tables.size() == 0) throw new Error("no tables were found registered on DAC.initializeDatabase()");
+    protected void initializeDatabase(Context context, List<DbTable> tables) {
         if(dbHelper != null) throw new Error("DAC object has allready been initialized");
         dbHelper = new DbHelper(context, tables, dbFileName, dbVersionNr);
     }
@@ -65,17 +60,6 @@ public class DAC extends ContentObservable {
     protected void finalize() throws Throwable {
         if(dbLock.isHeldByCurrentThread()) throw new Error("GC is destroying a DAC instance that is holding an unreleased lock!");
         super.finalize();
-    }
-
-    /**
-     * Stores a reference to a table object in order to allow its management by the DAC object.
-     * Make sure to call this method with all tables <b>before<b/> calling initializeDatabase(Context context).
-     *
-     * @param newTable table to be managed by the DAC instance
-     */
-    protected void registerTable(DbTable newTable) {
-        if(dbHelper != null) throw new Error("cannot register new tables after DAC.initializeDatabase()");
-        tables.add(newTable);
     }
 
     /**

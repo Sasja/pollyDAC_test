@@ -80,6 +80,11 @@ public abstract class DbTable<E> {
         return new DbEntry<>(e, _id, this);
     }
 
+    /**
+     * Creator, that really doesn't do anything besides storing the tableName and a reference to its dao.
+     * @param tableName
+     * @param dao
+     */
     protected DbTable(String tableName, DAC dao) {
         this.dao = dao;
         this.tableName = tableName;
