@@ -75,6 +75,7 @@ public class DAC extends ContentObservable {
 
     /**
      * Release the database lock and disconnect. So other threads can proceed to connect.
+     * Use this with a try finally statement to prevent a deadlock on an exception.
      */
     public void close() {
         unlockAndReleaseDb();

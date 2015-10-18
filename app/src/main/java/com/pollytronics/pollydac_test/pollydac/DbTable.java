@@ -17,6 +17,7 @@ import java.util.List;
  * All database operations lock up the database using the DAC associated with it. Keep this
  * in mind when extending this class with custom methods.
  *
+ * TODO: an exception during a db operation will leave it locked... use try/finally or synchronized
  * Created by pollywog on 10/9/15.
  */
 public abstract class DbTable<E> {
